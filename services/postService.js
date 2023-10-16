@@ -7,30 +7,33 @@ const connect = {
     database: 'practice_database'
 };
 
-const writePost = async (req, res) => {
+const writePost = async (req, res) => { // async 함수는 await과 짝꿍! 프라미스를 좀 더편하게 사용하기 위해 활용 한다. 
     console.log("마! 게시글 함 써보까!");
     try {
-        const sql = "INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)";
-        const conn = await mysql.createConnection(connect);
-        const postInfo = {
-            "title": req.body.title,
+        const sql = " INSERT INTO threads (user_id, content) VALUES (?, ?) ";
+        const conn = await mysql.createConnection(connect); // DB연결
+        const postInfo = { // 재사용 가능성이 있기에 객체 생성
             "content": req.body.content,
             "user_id": req.body.user_id
         };
-        await conn.execute(sql, [postInfo.title, postInfo.content, postInfo.user_id]);
-        conn.end();
+        await conn.execute(sql, [postInfo.content, postInfo.user_id]);
+        conn.end(); // DB종료
         res.status(201).json({ message: "Create Post SUCCESS!!!"});
-    } catch(error) {
-        console.error("Error ", error);
-        res.status(500).json({message: "으악 에러야! 돔황챠!!!"});
+    } catch(error) { // try catch문을 사용 하였고 예외를 처리한다.
+        console.error("Error ", error); // 에러 발생시 console창에 Error내용 출력
+        res.status(500).json({message: "으악 에러야! 돔황챠!!!"}); // 돔황챠!
     }
 };
 
-const showPosts = async (req, res) => {
-    console.log("게시글 전체 확인");
+const showPosts = async (req, res) => { 
+    console.log("게시글 전체 확인"); 
     try{
-        const conn = await mysql.createConnection(connect);
-        const sql = "SELECT title, content, user_id FROM posts ";
+        const conn = await mysql.createConnection(connect); 
+        // JOIN을 사용하여, 계정에 저장된 img파일을 매칭 시키고, id, content, profile을 호출 
+        const sql = ` SELECT 
+        threads.content, threads.user_id, threads.created_at, users.profile_image
+        FROM threads
+        JOIN users ON threads.user_id = users.id `; 
         const result = await conn.query(sql);
         conn.end();
         res.status(200).json({ message: result});
@@ -63,8 +66,7 @@ const specificUser = async (req, res) => {
         const sql = "SELECT users.name, posts.title, posts.content FROM posts JOIN users on users.id = posts.user_id WHERE users.id = ?";
         const result = await conn.query(sql, [user_id]);
         conn.end();
-        res.status(201).json({message: result}); 
-
+        res.status(201).json({message: result});
     } catch(error) {
         res.status(500).json({ message: "돔항챠 얘들아!! 에러 투성이야!!"});
     }
