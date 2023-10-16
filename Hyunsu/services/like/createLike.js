@@ -41,7 +41,7 @@ const createLike = async (req, res) => {
     );
     `
     )
-    console.log("TYPEORM DATA GOT QUERY")
+    console.log("TYPEORM DATA GOT QUERY LENGTH", threadLike.length)
 
     return res.status(201).json({"message": "Successfully ADDED Like!"})
 }
