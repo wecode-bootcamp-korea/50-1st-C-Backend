@@ -1,17 +1,5 @@
-const { DataSource } = require("typeorm")
-const dotenv = require('dotenv')
-dotenv.config()
+const {appDataSource } = require("/Users/choehyeonsu/50-1st-C-Backend/models/appdata/datasrc.js")
 
-const appDataSource = new DataSource(
-    {
-        type: "mysql",
-        host: '127.0.0.1',
-        port: '3306',
-        username: "root",
-        password: "1234",
-        database: "WETHREAD_1ST"
-    }
-)
 
 
 const createThread = async (req, res) => {

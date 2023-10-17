@@ -1,28 +1,21 @@
 const http = require('http')
 const express = require('express')
-// const { signUp } = require("./services/user/signUp")
-const { DataSource } = require("typeorm")
-const dotenv = require('dotenv')
-// const {getAllThreads} = require("./services/thread/view/threadsList");
-// const {deleteThread} = require("./services/thread/model/deleteThread");
-// const {onlyUserThread} = require("./services/thread/view/userThread");
-// const {createThread} = require("./services/thread/model/createThread");
-// const {modifyThread} = require("./services/thread/model/modifyThread");
-// const {createLike} = require("./services/like/createLike");
+const { signUp } = require("./models/user/signUp")
+// const {getAllThreads} = require("./models/thread/view/threadsList");
+// const {deleteThread} = require("./models/thread/model/deleteThread");
+// const {onlyUserThread} = require("./models/thread/view/userThread");
+// const {createThread} = require("./models/thread/model/createThread");
+// const {modifyThread} = require("./models/thread/model/modifyThread");
+// const {createLike} = require("./models/like/createLike");
 // /  POST login요청이 들어오면 body에 id와 password를 실어서 요청으로 가정해서 jwt를 발급해준다.
-dotenv.config()
+
+// const salt1 = require('bcrypt')
+// const hashedPw = bcrypt.hashSync("passwoord", bcrypt.getSaltSync());
+//
+// bcrypt.compareSync("1234", hashedPw)
 
 
-const appDataSource = new DataSource(
-    {
-        type: "mysql",
-        host: '127.0.0.1',
-        port: '3306',
-        username: "root",
-        password: "1234",
-        database: "WETHREAD_1ST"
-    }
-)
+
 // app.post("/login", );
 
 
@@ -32,12 +25,10 @@ const appDataSource = new DataSource(
 const app = express()
 
 app.use(express.json())
-// cors는 추후에 설정.
-// // --------------------------------------------------------------------------------------------------------
-//
 
 // babel로 js decorator로 DataSource Class를 불러올 수는 없을까?
 
+app.post("/users/sign-up", signUp )
 // --------------------------------------------------------------------------------------------------------
 
 // Health Check, server Create
@@ -51,41 +42,12 @@ const server = http.createServer(app)
 // --------------------------------------------------------------------------------------------------------
 
 
-app.post('/users/sign-up', async (req, res) => {
-    // variables in signUp() Announcement and values Appending
-    const userName = req.body.nickname;
-    const userEmail = req.body.email
-    const userPassword = req.body.password
-
-    const userData = await appDataSource.query(`
-          INSERT INTO users (
-          nickname,
-          email,
-          password
-            )
-        VALUES (
-          '${userName}',
-          '${userEmail}',
-          '${userPassword}'
-            )`)
-
-    // just Logging. If ./.env.LOGGING === FALSE, NO LOGGING WILL APPEAR ON CONSOLE (그냥 한국어로 적을까)
-    console.log("TYPEORM DATA RETURNS: ", userData.length)
-
-    return res.status(201).json({"message": "userCREATED"})
-    }
-)
-
 
 const start = async () => {
     console.log("Maybe it will be the last survivor of this Function Start")
     try {
         server.listen(8000, () => console.log('Server is listing on PORT 8000'))
-        appDataSource.initialize().then(
-            () => {
-                console.log("Initialized! Your DB is initialized via typeorm DataSource")
-            }
-        )
+
     }
     catch (err) {
         console.error(err)
