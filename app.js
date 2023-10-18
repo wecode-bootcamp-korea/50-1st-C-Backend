@@ -1,15 +1,20 @@
 const express = require('express');
 const mysql = require('mysql2/promise'); // mysql2/promise 모듈 사용
 const app = express();
-app.use(express.json());
 const PORT = 8000;
 const http = require('http');
+const cors = require('cors');
 const {createUser, login} = require('./services/userService');
 const {writePost, showPosts, specificUser, modifyContent, deletePosts, likePost} = require('./services/postService');
+app.use(cors());
+app.use(express.json());
 console.log("마 시작했따!");
-
 app.listen(PORT, () => {
     console.log(`${PORT}번 port에 연결 되었습니다.`);
+});
+
+app.get('/', (req,res) => {
+    res.status(200).json({ messge: "Power PONG!!!!!!!!!!!!"});
 });
 
 app.post('/insertUserInfo', createUser);

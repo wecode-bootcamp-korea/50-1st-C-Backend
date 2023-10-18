@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise'); // mysql2/promise 모듈 사용
 const bcrypt = require('bcrypt');
 const query = require('./query/queryCollection');
+const requestSource = require('./requestData/requestSource');
 const connect = {
     host: '127.0.0.1',
     port: "3306",
@@ -14,10 +15,6 @@ const writePost = async (req, res) => { // async 함수는 await과 짝꿍! 프�
     try {
         const sql = query.writePost();
         const conn = await mysql.createConnection(connect); // DB연결
-        const postInfo = { // 재사용 가능성이 있기에 객체 내부에 변수 설정
-            "content": req.body.content,
-            "user_id": req.body.user_id
-        };
         await conn.execute(sql, [postInfo.content, postInfo.user_id]); //DB실행
         conn.end(); // DB종료
         res.status(201).json({ message: "Create Post SUCCESS!!!"});
@@ -43,8 +40,6 @@ const showPosts = async (req, res) => {
 };
 
 const comments = async (req, res) => {
-    console.log("댓! 글! 댓! 글! 댓! 글! 댓! 글! 댓! 글! 좋! 아!");
-    // 많이 어색해 보이는 쿼리인데, 수정 해야할 듯.
     try {
         const sql = query.comments();
         const id = req.body.id;
@@ -128,13 +123,9 @@ const likePost = async (req, res) => {
     const check_Like = false;
     try {
         const conn = await mysql.createConnection(connect);
-        // 좋아요 추가 쿼리문
         const sql = query.likePost();
         const user_id = req.body.user_id;
         const thread_id = req.body.thread_id;
-        // 좋아요가 눌렸는지 확인하는 쿼리문
-        // like테이블 id와 users id 확인 그 아이디와 일치하는 값의 thread_id를 추가
-        // 즉 좋아요 누르면 이 펑션이 실행, 이미 있는 threads_id라고 한다면, 해당 데이터 delete해야함. 
         const checkLike = query.checkLike();
         const hateThreadsQuery = query.hateThreadsQuery();
         const result = await conn.query(checkLike, [user_id, thread_id]);
