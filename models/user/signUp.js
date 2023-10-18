@@ -1,6 +1,8 @@
 const {appDataSource } = require("/Users/choehyeonsu/50-1st-C-Backend/models/appdata/datasrc.js")
-const { UserInfoServices } = require("../../services/services")
-const { EmailServices } = require("../../services/services")
+const { UserInfoService } = require("../../services/services")
+// const { EmailServices } = require("../../services/services")
+
+
 const signUp = async( req, res ) => {
 
     // variables in signUp() Announcement and values Appending
@@ -10,8 +12,8 @@ const signUp = async( req, res ) => {
 
     // 혹시 모르니까 이메일 먼저 체크 그 담에 닉네임 체크. 아래는 비동기 함수로 안에 await 문으로 db를 먼저 읽는다.
     // 에러가 없다면 문제가 없는 것입니다. 에러 말고 콘솔에 뭐라고 함수 이름이랑 정보 뜰 것.
-    await UserInfoServices.findUserWithInfo(); // 이메일 먼저 중복 검사 한 후에 닉네임 중복 검사. 이메일 형식 오류보다 덜 일어날 것 같다. cmd+click하면 findUserWithInfo()로 넘어간다.
-
+    const checkDuplicateObject = new UserInfoService(userNickName, userEmail); // 이메일 먼저 중복 검사 한 후에 닉네임 중복 검사. 이메일 형식 오류보다 덜 일어날 것 같다. cmd+click하면 findUserWithInfo()로 넘어간다.
+    checkDuplicateObject.findUserWithInfo();
 
 
     // 이메일 형식 검사 // 이건 ajax로 빼야된다. 가입 버튼 누르기 전에!!
@@ -19,13 +21,13 @@ const signUp = async( req, res ) => {
 
     // Password 길이 부족 핸들링 (email 입력 오류보다 더 적은 케이스)
     // 의외로 닉네임 중복 등이 길이 조건 예외보다 더 적지 않을까? 해서 내렸다.
-    const checkPasswordLength = () => {
-        if (userPassword.length < 10) {
-            res.status(400).json({"message": "PASSWORD SHOULD BE SAME OR LONGER THAN 10"})
-        }
-    }
-
-    checkPasswordLength()
+    // const checkPasswordLength = () => {
+    //     if (userPassword.length < 10) {
+    //         res.status(400).json({"message": "PASSWORD SHOULD BE SAME OR LONGER THAN 10"})
+    //     }
+    // }
+    //
+    // checkPasswordLength()
 
     // // Password Impact Check 숫자/영대문/영소문/특문 모두 포함 및 8자 이상
     // // //
