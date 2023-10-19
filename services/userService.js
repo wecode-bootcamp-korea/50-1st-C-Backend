@@ -20,14 +20,14 @@ const createUser = async (req, res) => {
         console.log("회원 가입");
         const conn = await mysql.createConnection(connect); // DB연결
         const saltRounds = 10; // 몇번 돌릴건지, 
-        const salt = bcrypt.genSaltSync(saltRounds); // 소금, 애미야 국이 짜다!
-        const hash = bcrypt.hashSync(req.body.password, salt); // 해시 포테이토 먹고싶다.
+        const salt = bcrypt.genSaltSync(saltRounds); 
+        const hash = bcrypt.hashSync(req.body.password, salt);
         const checkEmailQuery = query.checkEmail(); // 이메일 체크 
         const sql = query.createUser(); // 유효성 검사 하고 체크
         const temp = req.body.email; // 유저 이메일 받고~
         const checkEmail = await conn.query(checkEmailQuery, [temp]); // 체크에 넣어 확인~
-        console.log(req.body.email); // 찍어보고~
-        console.log(checkEmail[0]); // 확인하고~
+        console.log(req.body.email); 
+        console.log(checkEmail[0]);
         const temp2 = checkEmail[0];
         if(checkEmail[0][0] === undefined) {
             const userInfo = requestSource.userInfo(req, hash); // 
