@@ -10,29 +10,45 @@ function checkEmail() {
     const sql = ` SELECT email FROM users WHERE email = ? `;
     return sql;
 }
-
+// UserInfo 가져오기 
+function getUserInformation() {
+    const sql = ` SELECT email, password from users WHERE email = ? `;
+    return sql;
+}
 // 로그인
 function login() {
-    const sql = ` SELECT password FROM users WHERE email = ? `;
+    const sql = ` SELECT email, password FROM users WHERE email = ? AND password = ? `;
     return sql;
 }
 // 게시글 작성
 function writePost() {
-    const sql = " INSERT INTO threads (user_id, content) VALUES (?, ?) ";
+    const sql = " INSERT INTO threads (content, user_id) VALUES (?, ?) ";
+    return sql;
+}
+// 상세보기
+function details() {
+    const sql = ` SELECT 
+    threads.id, users.nickname, users.profile_image, 
+    threads.content, threads.created_at 
+    FROM threads JOIN users ON users.id = threads.user_id WHERE threads.id = ? `;
     return sql;
 }
 // 전체 출력
 function showPosts() {
     const sql = ` SELECT 
-    threads.content, threads.user_id, threads.created_at, users.profile_image
+    threads.id, threads.content, users.nickname, threads.created_at, users.profile_image
     FROM threads
     JOIN users ON threads.user_id = users.id `;
     return sql;
 }
 // 댓글
 function comments() {
-    const sql = " INSERT INTO comments (id, comment, post_id) VALUES (?, ?, ?) "; 
+    const sql = " INSERT INTO thread_comments (id, comment, post_id) VALUES (?, ?, ?) "; 
     return sql;
+}
+// 댓글 삭제
+function deleteComment() {
+    const sql = ` DELETE FROM thread_comments WHERE thread_id = ? AND user_id = ? `;
 }
 // 검색
 function specificUser() {
@@ -45,9 +61,7 @@ function specificUser() {
 // 수정
 function modifyContent() {
     const sql = ` UPDATE threads SET content = ? WHERE user_id = ? AND id = ? `; 
-        
-        
-        return sql;
+    return sql;
 }
 // 삭제 전 유저 체크
 function checkPost_id_Query() {
@@ -83,6 +97,7 @@ function hateThreadsQuery() {
     return hateThreadsQuery;
 }
 
+
 module.exports = {
     createUser,
     checkEmail,
@@ -93,8 +108,10 @@ module.exports = {
     specificUser,
     modifyContent,
     checkPost_id_Query,
-    deletePosts,
+    deletePosts,    
     likePost,
     checkLike,
-    hateThreadsQuery
+    hateThreadsQuery,
+    getUserInformation,
+    details
 };

@@ -1,4 +1,4 @@
-//회원가입, 로그인
+//회원가입
 const userInfo = (req, hash) => {
     const user = { 
         "nickname": req.body.nickname,
@@ -9,17 +9,25 @@ const userInfo = (req, hash) => {
         "profile_image": req.body.profile_image,
         "update_at": req.body.update_at
     };
-
     return user;
 };
+
+// 로그인 
+const checkUserInfo = (req) => {
+    const secretUserInfo = {
+        "email" : req.body.email,
+        "password" : req.body.password
+    };
+    return secretUserInfo;
+}
 // 작성
 const writeThread = (req) => {
     const thread = { 
         "id" : req.body.id,
         "user_id": req.body.user_id,
-        "content": req.body.content
+        // "user_id": 28,
+        // "content": req.body.content
     };
-
     return thread;
 };
 // 댓글
@@ -75,5 +83,6 @@ module.exports = {
     searchThread,
     modify,
     deleteThread,
-    likeThread
+    likeThread,
+    checkUserInfo
 };
